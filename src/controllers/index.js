@@ -9,3 +9,4 @@ module.exports.nhaCungCapController = require('./nhaCungCap.controller');
 module.exports.loaiDichVuController = require('./loaiDichVu.controller');
 module.exports.mucPhiController = require('./mucPhi.controller');
 module.exports.dongXeController = require('./dongXe.controller');
+module.exports.sinhVienController = require('./SinhVien_NguyenChauQuyen_de3.controller');

@@ -10,6 +10,7 @@ const nhaCungCapRoute = require('./nhaCungCap.route');
 const loaiDichVuRoute = require('./loaiDichVu.route');
 const mucPhiRoute = require('./mucPhi.route');
 const dongXeRoute = require('./dongXe.route');
+const sinhVienRoute = require('./SinhVien_NguyenChauQuyen_de3.route');
 const docsRoute = require('./docs.route');
 const config = require('../../config/config');
 
@@ -59,6 +60,10 @@ const defaultRoutes = [
   {
     path: '/dong-xe',
     route: dongXeRoute,
+  },
+  {
+    path: '/sinh-vien',
+    route: sinhVienRoute,
   },
 ];
 

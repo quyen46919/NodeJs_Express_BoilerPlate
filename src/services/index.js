@@ -11,3 +11,4 @@ module.exports.nhaCungCapService = require('./nhaCungCap.service');
 module.exports.loaiDichVuService = require('./loaiDichVu.service');
 module.exports.mucPhiService = require('./mucPhi.service');
 module.exports.dongXeService = require('./dongXe.service');
+module.exports.sinhVienService = require('./sinhVien_NguyenChauQuyen_de3.service');

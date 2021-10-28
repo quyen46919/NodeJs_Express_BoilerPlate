@@ -9,3 +9,4 @@ module.exports.nhaCungCapValidation = require('./nhaCungCap.validation');
 module.exports.loaiDichVuValidation = require('./loaiDichVu.validation');
 module.exports.mucPhiValidation = require('./mucPhi.validation');
 module.exports.dongXeValidation = require('./dongXe.validation');
+module.exports.sinhVienValidation = require('./SinhVien_NguyenChauQuyen_de3.validation');
