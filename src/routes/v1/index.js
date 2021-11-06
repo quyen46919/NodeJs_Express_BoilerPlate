@@ -11,6 +11,11 @@ const loaiDichVuRoute = require('./loaiDichVu.route');
 const mucPhiRoute = require('./mucPhi.route');
 const dongXeRoute = require('./dongXe.route');
 const sinhVienRoute = require('./SinhVien_NguyenChauQuyen_de3.route');
+const khoaRoute = require('./khoa.route');
+const giangVienRoute = require('./giangVien.route');
+const deTaiRoute = require('./deTai.route');
+const huongDanRoute = require('./huongDan.route');
+const questionRoute = require('./question.route');
 const docsRoute = require('./docs.route');
 const config = require('../../config/config');
 
@@ -64,6 +69,26 @@ const defaultRoutes = [
   {
     path: '/sinh-vien',
     route: sinhVienRoute,
+  },
+  {
+    path: '/khoa',
+    route: khoaRoute,
+  },
+  {
+    path: '/giang-vien',
+    route: giangVienRoute,
+  },
+  {
+    path: '/de-tai',
+    route: deTaiRoute,
+  },
+  {
+    path: '/huong-dan',
+    route: huongDanRoute,
+  },
+  {
+    path: '/question',
+    route: questionRoute,
   },
 ];
 

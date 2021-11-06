@@ -12,3 +12,7 @@ module.exports.loaiDichVuService = require('./loaiDichVu.service');
 module.exports.mucPhiService = require('./mucPhi.service');
 module.exports.dongXeService = require('./dongXe.service');
 module.exports.sinhVienService = require('./sinhVien_NguyenChauQuyen_de3.service');
+module.exports.khoaService = require('./khoa.service');
+module.exports.giangVienService = require('./giangVien.service');
+module.exports.deTaiService = require('./deTai.service');
+module.exports.huongDanService = require('./huongDan.service');

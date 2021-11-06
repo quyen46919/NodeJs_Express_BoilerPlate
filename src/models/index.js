@@ -10,3 +10,7 @@ module.exports.LoaiDichVu = require('./loaiDichVu.model');
 module.exports.MucPhi = require('./mucPhi.model');
 module.exports.DongXe = require('./dongXe.model');
 module.exports.SinhVien = require('./SinhVien_NguyenChauQuyen_de3.model');
+module.exports.Khoa = require('./khoa.model');
+module.exports.GiangVien = require('./giangVien.model');
+module.exports.DeTai = require('./deTai.model');
+module.exports.HuongDan = require('./huongDan.model');
