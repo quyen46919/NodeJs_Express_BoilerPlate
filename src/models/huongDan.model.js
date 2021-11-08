@@ -10,9 +10,12 @@ const huongDanSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  ketqua: {
+  maSV: {
     type: String,
     required: true
+  },
+  ketqua: {
+    type: String
   }
 });
 

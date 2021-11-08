@@ -4,9 +4,6 @@ const ApiError = require('../utils/ApiError');
 
 
 const taoHuongDan = async (body) => {
-  if (await HuongDan.isNameTaken(body.tenHuongDan)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Hướng dẫn đã tồn tại!');
-  }
   return HuongDan.create(body);
 };
 

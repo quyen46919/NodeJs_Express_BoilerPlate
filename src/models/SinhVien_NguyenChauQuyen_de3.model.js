@@ -9,7 +9,6 @@ const sinhVienSchema = mongoose.Schema({
   },
   maKhoa: {
     type: String,
-    maxLength: 10,
     required: true
   },
   namSinh: {
@@ -26,8 +25,8 @@ const sinhVienSchema = mongoose.Schema({
 sinhVienSchema.plugin(toJSON);
 sinhVienSchema.plugin(paginate);
 
-sinhVienSchema.statics.isNameTaken = async function (name, excludeUserId) {
-  const sinhVien = await this.findOne({name, _id: { $ne: excludeUserId } });
+sinhVienSchema.statics.isNameTaken = async function (hoTen, excludeUserId) {
+  const sinhVien = await this.findOne({hoTen, _id: { $ne: excludeUserId } });
   return !!sinhVien;
 };
 

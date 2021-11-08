@@ -4,7 +4,7 @@ const { objectId } = require('./custom.validation');
 const taoSinhVien = {
   body: Joi.object().keys({
     hoTen: Joi.string().max(30).required(),
-    maKhoa: Joi.string().max(10).required(),
+    maKhoa: Joi.string().custom(objectId).required(),
     namSinh: Joi.number().required(),
     queQuan: Joi.string().max(30).required(),
   }),
@@ -13,7 +13,7 @@ const taoSinhVien = {
 const timTatCaSinhVien = {
   query: Joi.object().keys({
     hoTen: Joi.string().max(30),
-    maKhoa: Joi.string().max(10),
+    maKhoa: Joi.string().custom(objectId),
     namSinh: Joi.number(),
     queQuan: Joi.string().max(30),
     sortBy: Joi.string(),
@@ -35,7 +35,7 @@ const capNhatSinhVien = {
   body: Joi.object()
     .keys({
       hoTen: Joi.string().max(30),
-      maKhoa: Joi.string().max(10),
+      maKhoa: Joi.string().custom(objectId),
       namSinh: Joi.number(),
       queQuan: Joi.string().max(30),
     })

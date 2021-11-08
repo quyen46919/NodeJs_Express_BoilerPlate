@@ -5,7 +5,8 @@ const taoHuongDan = {
   body: Joi.object().keys({
     maDT: Joi.string().required().custom(objectId),
     maGV: Joi.string().required().custom(objectId),
-    ketqua: Joi.string().required(),
+    maSV: Joi.string().required().custom(objectId),
+    ketqua: Joi.string().allow(null),
   }),
 };
 
@@ -13,6 +14,7 @@ const timTatCaHuongDan = {
   query: Joi.object().keys({
     maDT: Joi.string().custom(objectId),
     maGV: Joi.string().custom(objectId),
+    maSV: Joi.string().custom(objectId),
     ketqua: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
@@ -32,9 +34,10 @@ const capNhatHuongDan = {
   }),
   body: Joi.object()
     .keys({
-        maDT: Joi.string().custom(objectId),
-        maGV: Joi.string().custom(objectId),
-        ketqua: Joi.string(),
+      maDT: Joi.string().custom(objectId),
+      maGV: Joi.string().custom(objectId),
+      maSV: Joi.string().custom(objectId),
+      ketqua: Joi.string(),
     })
     .min(1),
 };
