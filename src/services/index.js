@@ -16,3 +16,4 @@ module.exports.khoaService = require('./khoa.service');
 module.exports.giangVienService = require('./giangVien.service');
 module.exports.deTaiService = require('./deTai.service');
 module.exports.huongDanService = require('./huongDan.service');
+module.exports.questionService = require('./question.service');

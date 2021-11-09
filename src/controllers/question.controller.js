@@ -7,318 +7,54 @@ const DeTai = require('../models/deTai.model');
 const SinhVien = require('../models/SinhVien_NguyenChauQuyen_de3.model');
 const GiangVien = require('../models/giangVien.model');
 const mongoose = require('mongoose');
-
-// const cau1 = catchAsync(async (req, res) => {
-//     await Khoa
-//     .aggregate([
-//         {
-//             $addFields: {
-//                 _maKhoaObjectId: { $toString: '$_id'}
-//             } 
-//         },
-//         {
-//             $lookup: {
-//                 from: 'giangviens',
-//                 localField: '_maKhoaObjectId',
-//                 foreignField: 'maKhoa',
-//                 as: 'danhSachGiangVien'
-//             }
-//         }
-//     ])
-//     .exec((err, result) => {
-//         if (err) throw new ApiError(httpStatus.BAD_REQUEST, 'Có lỗi xảy ra!');
-
-//         const list = result.map(i => i.danhSachGiangVien.map(x => ({
-//             maSo: x._id,
-//             tenGV: x.hoTenGV,
-//             tenKhoa: i.tenKhoa
-//         }))).flat();
-
-//         res.send(list);
-//     });
-// });
+const { questionService } = require('../services');
 
 const cau1 = catchAsync(async (req, res) => {
-    await Khoa.aggregate([
-        {
-            $addFields: {
-                _maKhoaStringId: {
-                    $toString: '$_id'
-                }
-            }
-        },
-        {
-            $lookup: {
-                from: 'giangviens',
-                localField: '_maKhoaStringId',
-                foreignField: 'maKhoa',
-                as: 'danhSachGiangVien'
-            }
-        }
-    ])
-    .exec((err, value) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, 'Có lỗi xảy ra!');
-
-        let filterValues = value.map(x => x.danhSachGiangVien.map(y => ({
-            tenKhoa: x.tenKhoa,
-            maGV: y._id,
-            hoTen: y.hoTenGV
-        }))).flat();
-
-
-
-        filterValues = filterValues.filter(x => x.tenKhoa === 'DIALY' || x.tenKhoa === 'QLTN');
-
-        res.send(filterValues);
-    })
+    const result = await questionService.cau1();
+    res.status(httpStatus.OK).send(result);
 }); 
 
 const cau2 = catchAsync(async (req, res) => {
-    await Khoa
-    .aggregate([
-        {
-            $match: {
-                tenKhoa: {
-                    $in: ['DIALY', 'QLTN']
-                }
-            }
-        },
-        {
-            $addFields: {
-                _maKhoaObjectId: { $toString: '$_id'}
-            } 
-        },
-        {
-            $lookup: {
-                from: 'giangviens',
-                localField: '_maKhoaObjectId',
-                foreignField: 'maKhoa',
-                as: 'danhSachGiangVien'
-            }
-        }
-    ])
-    .exec((err, result) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, 'Có lỗi xảy ra!');
-
-        const list = result
-        .filter(z => z.tenKhoa === 'DIALY' || z.tenKhoa === 'QLTN')
-        .map(i => i.danhSachGiangVien.map(x => ({
-            maSo: x._id,
-            tenGV: x.hoTenGV,
-            tenKhoa: i.tenKhoa
-        }))).flat();
-
-        res.send(list);
-    });
+    const result = await questionService.cau2();
+    res.status(httpStatus.OK).send(result);
 });
 
 const cau3 = catchAsync(async (req, res) => {
-    await Khoa
-    .aggregate([
-        {
-            $match: {
-                tenKhoa: 'CONG NGHE SINH HOC'
-            }
-        },
-        {
-            $addFields: {
-                _maKhoaObjectId: { $toString: '$_id'}
-            } 
-        },
-        {
-            $lookup: {
-                from: 'sinhviens',
-                localField: '_maKhoaObjectId',
-                foreignField: 'maKhoa',
-                as: 'danhSachSinhVien'
-            }
-        },
-        // {
-        //     $count: 'danhSachSinhVien'
-        // }
-    ])
-    .exec((err, result) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, 'Có lỗi xảy ra!');
-
-        const list = result
-        .map(i => ({
-            tenKhoa: i.tenKhoa,
-            soSinhVien: i.danhSachSinhVien.length
-        }));
-
-        res.send(list);
-    });
+    const result = await questionService.cau3();
+    res.status(httpStatus.OK).send(result);
 });
 
 const cau4 = catchAsync(async (req, res) => {
-    await Khoa
-    .aggregate([
-        {
-            $match: {
-                tenKhoa: 'TOAN'
-            }
-        },
-        {
-            $addFields: {
-                _maKhoaObjectId: { $toString: '$_id'}
-            } 
-        },
-        {
-            $lookup: {
-                from: 'sinhviens',
-                localField: '_maKhoaObjectId',
-                foreignField: 'maKhoa',
-                as: 'danhSachSinhVien'
-            }
-        }
-    ])
-    .exec((err, result) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, 'Có lỗi xảy ra!');
-
-        const list = result
-        .map(i => i.danhSachSinhVien.map(x => ({
-            maSo: x._id,
-            tenSinhVien: x.hoTen,
-            tenKhoa: i.tenKhoa,
-            tuoi: 2021 - parseInt(x.namSinh)
-        }))).flat();
-
-        res.send(list);
-    });
+    const result = await questionService.cau4();
+    res.status(httpStatus.OK).send(result);
 });
 
 const cau5 = catchAsync(async (req, res) => {
-    await Khoa
-    .aggregate([
-        {
-            $match: {
-                tenKhoa: 'CONG NGHE SINH HOC'
-            }
-        },
-        {
-            $addFields: {
-                _maKhoaObjectId: { $toString: '$_id'}
-            } 
-        },
-        {
-            $lookup: {
-                from: 'giangviens',
-                localField: '_maKhoaObjectId',
-                foreignField: 'maKhoa',
-                as: 'danhSachGiangVien'
-            }
-        }
-    ])
-    .exec((err, result) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, 'Có lỗi xảy ra!');
-
-        const list = result
-        .map(i => ({
-            tenKhoa: i.tenKhoa,
-            soGiangVien: i.danhSachGiangVien.length
-        })).flat();
-
-        res.send(list);
-    });
+    const result = await questionService.cau5();
+    res.status(httpStatus.OK).send(result);
 });
 
 const cau6 = catchAsync(async (req, res) => {
-    await HuongDan
-    .aggregate([
-        {
-            $addFields: {
-                _maSV: { $toObjectId: '$maSV'}
-            } 
-        },
-        {
-            $lookup: {
-                from: 'sinhviens',
-                localField: '_maSV',
-                foreignField: '_id',
-                as: 'danhSachSinhVien'
-            }
-        }
-    ])
-    .exec((err, result) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, 'Có lỗi xảy ra!');
-
-        const list = result
-        .map(i => i.danhSachSinhVien).flat().map(x => String(x._id));
-
-        SinhVien.find().exec((err, values) => {
-            if (err) throw new ApiError(httpStatus.BAD_REQUEST, 'Có lỗi xảy ra!');
-
-            values = values.filter(x1 => list.includes(String(x1._id)));
-            res.send(values);
-        });
-    });
+    const result = await questionService.cau6();
+    res.status(httpStatus.OK).send(result);
 });
 
 const cau7 = catchAsync(async (req, res) => {
-    await Khoa
-    .aggregate([
-        {
-            $addFields: {
-                _maKhoaObjectId: { $toString: '$_id'}
-            } 
-        },
-        {
-            $lookup: {
-                from: 'giangviens',
-                localField: '_maKhoaObjectId',
-                foreignField: 'maKhoa',
-                as: 'danhSachGiangVien'
-            }
-        }
-    ])
-    .exec((err, result) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, 'Có lỗi xảy ra!');
-
-        const list = result
-        .map(i => ({
-            maKhoa: i._id,
-            tenKhoa: i.tenKhoa,
-            soGiangVien: i.danhSachGiangVien.length
-        })).flat();
-
-        res.send(list);
-    });
+    const result = await questionService.cau7();
+    res.status(httpStatus.OK).send(result);
 });
 
 const cau8 = catchAsync(async (req, res) => {
-    await Khoa
-    .aggregate([
-        {
-            $addFields: {
-                _maKhoaObjectId: { $toString: '$_id'}
-            } 
-        },
-        {
-            $lookup: {
-                from: 'sinhviens',
-                localField: '_maKhoaObjectId',
-                foreignField: 'maKhoa',
-                as: 'danhSachSinhVien'
-            }
-        },
-        {
-            $project: {
-                dienThoai: 1,
-                danhSachSinhVien: 1
-            }
-        },
-    ])
-    .exec((err, result) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, 'Có lỗi xảy ra!');
-
-        const sdt = result
-        .filter(x => x.danhSachSinhVien.some(y => y.hoTen === 'Le Van Son'))[0].dienThoai;
-
-        res.send(sdt);
-    });
+    const result = await questionService.cau8();
+    res.status(httpStatus.OK).send(result);
 });
 
 const cau9 = catchAsync(async (req, res) => {
+    const result = await questionService.cau9();
+    res.status(httpStatus.OK).send(result);
+});
+
+const cau91 = catchAsync(async (req, res) => {
     await HuongDan
     .aggregate([
         {
