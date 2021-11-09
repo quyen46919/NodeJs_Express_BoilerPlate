@@ -1,12 +1,5 @@
 const httpStatus = require('http-status');
-const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
-const Khoa = require('../models/khoa.model');
-const HuongDan = require('../models/huongDan.model');
-const DeTai = require('../models/deTai.model');
-const SinhVien = require('../models/SinhVien_NguyenChauQuyen_de3.model');
-const GiangVien = require('../models/giangVien.model');
-const mongoose = require('mongoose');
 const { questionService } = require('../services');
 
 const cau1 = catchAsync(async (req, res) => {
@@ -54,256 +47,51 @@ const cau9 = catchAsync(async (req, res) => {
     res.status(httpStatus.OK).send(result);
 });
 
-const cau91 = catchAsync(async (req, res) => {
-    await HuongDan
-    .aggregate([
-        {
-            $addFields: {
-                _maGV: { $toObjectId: '$maGV'}
-            } 
-        },
-        {
-            $lookup: {
-                from: 'giangviens',
-                localField: '_maGV',
-                foreignField: '_id',
-                as: 'danhSachGiangVien'
-            }
-        }
-    ])
-    .exec(async (err, result) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, 'Có lỗi xảy ra!');
-
-        const filterResult = result.filter(x => x.danhSachGiangVien.some(y => y.hoTenGV === 'Tran Son')).map(z => z.maDT);
-
-        DeTai.find(
-            { _id: {
-                $in: filterResult
-            }}
-        ).select('tenDeTai').exec((err, deTai) => {
-            if (err) throw new ApiError(httpStatus.BAD_REQUEST, 'Có lỗi xảy ra!');
-
-            res.send(deTai);
-        })
-    });
-});
-
 const cau10 = catchAsync(async (req, res) => {
-    await HuongDan
-    .aggregate([
-        {
-            $addFields: {
-                _maDeTai: { $toObjectId: '$maDT'}
-            } 
-        },
-        {
-            $lookup: {
-                from: 'detais',
-                localField: '_maDeTai',
-                foreignField: '_id',
-                as: 'danhSachDeTai'
-            }
-        }
-    ])
-    .exec(async (err, result) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, `Có lỗi xảy ra! ${err}`);
-
-        const filterList = result.map(x => x.danhSachDeTai).flat().map(y => String(y._id));
-        
-        DeTai.find().select('tenDeTai').exec((err, values) => {
-            if (err) throw new ApiError(httpStatus.BAD_REQUEST, `Có lỗi xảy ra! ${err}`);
-
-            const lastResult = values.filter(x => !filterList.includes(String(x._id)));
-
-            res.send(lastResult);
-        });
-    });
+    const result = await questionService.cau10();
+    res.status(httpStatus.OK).send(result);
 });
 
-// CHƯA XỬ LÍ ĐƯỢC TRƯỜNG HỢP LÀ MỘT SINH VIÊN LÀM NHIỀU ĐỀ TÀI, DO CÙNG 1 GIẢNG VIÊN HỖ TRỢ
 const cau11 = catchAsync(async (req, res) => {
-    await HuongDan
-    .aggregate([
-        {
-            $addFields: {
-                _maGV: { $toObjectId: '$maGV'}
-            } 
-        },
-        {
-            $lookup: {
-                from: 'giangviens',
-                localField: '_maGV',
-                foreignField: '_id',
-                as: 'danhSachGiangVien'
-            }
-        }
-    ])
-    .exec(async (err, result) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, `Có lỗi xảy ra! ${err}`);
-
-        let filterList = result.map(x => x.danhSachGiangVien.map(y => ({
-            maSV: x.maSV,
-            maGV: String(y._id),
-            tenGV: y.hoTenGV
-        }))).flat();
-
-        let counts = {};
-        filterList.forEach(function (x) { counts[x.maGV] = (counts[x.maGV] || 0) + 1; });
-        
-        let listGiangVien = [];
-        for (const [key, value] of Object.entries(counts)) {
-            if (value >= 3) {
-                listGiangVien.push(key);
-            }
-        }
-
-        GiangVien.find({
-            _id: {
-                $in: listGiangVien
-            }
-        }).exec((err, giangViens) => {
-            res.send(giangViens);
-        });
-    });
+    const result = await questionService.cau11();
+    res.status(httpStatus.OK).send(result);
 });
 
 const cau12 = catchAsync(async (req, res) => {
-    await DeTai.findOne().sort('-kinhPhi').exec((err, result) => {
-        res.send(result);
-    });
+    const result = await questionService.cau12();
+    res.status(httpStatus.OK).send(result);
 });
 
 const cau13 = catchAsync(async (req, res) => {
-    await HuongDan
-    .aggregate([
-        { 
-            $group:  { 
-                _id: {
-                    maDT: '$maDT'
-                },
-                uniqueIds: {
-                    $addToSet: '$_id'
-                },
-                count: {$sum: 1}
-            } 
-        },
-        {
-            $match: { 
-                count: {
-                    $gt: 2
-                }
-            }
-        },
-        {
-            $sort: {
-                count: -1
-            }
-        }
-    ])
-    .exec(async (err, result) => {
-        res.send(result);
-    });
+    const result = await questionService.cau13();
+    res.status(httpStatus.OK).send(result);
 });
 
 const cau14 = catchAsync(async (req, res) => {
-    Khoa.find({
-        tenKhoa: {
-            $in: ['DIALY', 'QLTN']
-        }
-    })
-    .select('_id')
-    .exec(async (err, values) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, `Có lỗi xảy ra! ${err}`);
-
-        let listKhoaId = [];
-        for (let t = 0; t < values.length; t++) {
-            listKhoaId.push(String(values[t]._id));
-        }
-
-        await HuongDan
-        .aggregate([
-            {
-                $addFields: {
-                    _maSV: { $toObjectId: '$maSV'}
-                } 
-            },
-            {
-                $lookup: {
-                    from: 'sinhviens',
-                    localField: '_maSV',
-                    foreignField: '_id',
-                    as: 'danhSachSinhVien'
-                }
-            },
-        ])
-        .exec(async (err, result) => {
-            if (err) throw new ApiError(httpStatus.BAD_REQUEST, `Có lỗi xảy ra! ${err}`);
-
-            const filterList = result.map(x => x.danhSachSinhVien.map(y => ({
-                maSoSV: y._id,
-                hoTen: y.hoTen,
-                diem: x.ketqua,
-                maKhoa: String(y.maKhoa)
-            })))
-            .flat();
-
-            const sinhVienKhoaDIALYHoacQLTN = filterList
-            .filter(z => listKhoaId.includes(z.maKhoa))
-            .map(({maKhoa, ...rest}) => rest);
-           
-    
-            res.send(sinhVienKhoaDIALYHoacQLTN);
-            
-        });
-    });
+    const result = await questionService.cau14();
+    res.status(httpStatus.OK).send(result);
 });
 
 const cau15 = catchAsync(async (req, res) => {
-    await SinhVien
-    .aggregate([
-        {
-            $addFields: {
-                _maKhoa: { $toObjectId: '$maKhoa'}
-            } 
-        },
-        {
-            $lookup: {
-                from: 'khoas',
-                localField: '_maKhoa',
-                foreignField: '_id',
-                as: 'khoa'
-            }
-        },
-        {
-            $group: {
-                _id: {
-                    khoa: '$khoa'
-                },
-                uniqueIds: {
-                    $addToSet: '$_id'
-                },
-                count: {
-                    $sum: 1
-                }
-            }
-        },
-        {
-            $project: {
-                'count': 1
-            }
-        }
-    ])
-    .exec(async (err, result) => {
-        if (err) throw new ApiError(httpStatus.BAD_REQUEST, `Có lỗi xảy ra! ${err}`);
-
-        let filterResult = result.map(x => ({
-            tenKhoa: x._id.khoa[0].tenKhoa,
-            soSinhVien: x.count
-        }))
-
-        res.send(filterResult);
-    });
+    const result = await questionService.cau15();
+    res.status(httpStatus.OK).send(result);
 });
+
+const cau16 = catchAsync(async (req, res) => {
+    const result = await questionService.cau16();
+    res.status(httpStatus.OK).send(result);
+});
+
+const cau17 = catchAsync(async (req, res) => {
+    const result = await questionService.cau17();
+    res.status(httpStatus.OK).send(result);
+});
+
+const cau18 = catchAsync(async (req, res) => {
+    const result = await questionService.cau18();
+    res.status(httpStatus.OK).send(result);
+});
+
 
 module.exports = {
     cau1,
@@ -321,4 +109,7 @@ module.exports = {
     cau13,
     cau14,
     cau15,
+    cau16,
+    cau17,
+    cau18
 };

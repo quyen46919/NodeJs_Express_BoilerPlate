@@ -32,4 +32,10 @@ router.route('/cau14').get(questionController.cau14);
 
 router.route('/cau15').get(questionController.cau15);
 
+router.route('/cau16').get(questionController.cau16);
+
+router.route('/cau17').get(questionController.cau17);
+
+router.route('/cau18').get(questionController.cau18);
+
 module.exports = router;

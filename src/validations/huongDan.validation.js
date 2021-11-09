@@ -37,7 +37,7 @@ const capNhatHuongDan = {
       maDT: Joi.string().custom(objectId),
       maGV: Joi.string().custom(objectId),
       maSV: Joi.string().custom(objectId),
-      ketqua: Joi.string(),
+      ketqua: Joi.string().allow(null),
     })
     .min(1),
 };
